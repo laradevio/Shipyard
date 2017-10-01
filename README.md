@@ -53,7 +53,7 @@ With some minimal configuration, you can easily expand Laravel Shipyard to fit y
 <a name="pros-and-cons"></a>
 ### Pros and Cons
 
-Why you should use Shipyard instead of [Laravel Homestead](/docs/{{version}}/homestead) or your own system? And why you shouldn't?
+Why you should use Shipyard instead of [Laravel Homestead](https://laravel.com/docs/master/homestead) or your own system? And why you shouldn't?
 
 Long story short: If you are not comfortable with Homestead or your own system, or you want to not install anything in your system, then give Shipyard an go. It provides more flexibility and efficiency. Say goodbye to full VMs and XAMP stacks.
 
@@ -193,12 +193,12 @@ The Warehouse Container has:
 - PHP 7.1
 - Composer
 - Laravel Installer
-- [Laravel Envoy](/docs/{{version}}/envoy)
+- [Laravel Envoy](https://laravel.com/docs/master/envoy)
 
 <a name="warehouse-commands"></a>
 ### Warehouse Commands
 
-To run a command inside the Warehouse Container, just enter Shipyard directory and precede your command with `docker exec -it --user shipyard shipyard_warehouse`. In this example we will create a new project in our empty Application project directory, install [Laravel Mix](/docs/{{version}}/mix) using NPM and run a File Watcher to compile our assets on the fly. All of these without installing anything on the host OS.
+To run a command inside the Warehouse Container, just enter Shipyard directory and precede your command with `docker exec -it --user shipyard shipyard_warehouse`. In this example we will create a new project in our empty Application project directory, install [Laravel Mix](https://laravel.com/docs/master/mix) using NPM and run a File Watcher to compile our assets on the fly. All of these without installing anything on the host OS.
 
     cd ~/Shipyard
     
@@ -307,9 +307,9 @@ It's not enabled by default. To bring it call the container like any other:
 
 This container has running the following process workers:
 
-- [Laravel Schedule](/docs/{{version}}/scheduling) (Cron)
-- [Laravel Queue](/docs/{{version}}/queues#running-the-queue-worker)
-- [Laravel Horizon](/docs/{{version}}/horizon)
+- [Laravel Schedule](https://laravel.com/docs/master/scheduling) (Cron)
+- [Laravel Queue](https://laravel.com/docs/master/queues#running-the-queue-worker)
+- [Laravel Horizon](https://laravel.com/docs/master/horizon)
 
 These process workers have access to the Application and the Warehouse Container, as it depends on them. It uses your PHP Container as base image, so it has access to the same extensions and features, and these workers will output their logs to Docker.
 
@@ -354,7 +354,7 @@ In the Queue Worker area, you are free to use other Queue Workers for specific w
 <a name="configuring-shipyard"></a>
 ## Configuring Shipyard
 
-Laravel Shipyard comes with the familiar `.env` file with some default configuration, which behaves similar to the [Application environment file](/docs/{{version}}/configuration#environment-configuration). The values inside are passed to our `docker-compose.yml` every time you start or build containers.
+Laravel Shipyard comes with the familiar `.env` file with some default configuration, which behaves similar to the [Application environment file](https://laravel.com/docs/master/configuration#environment-configuration). The values inside are passed to our `docker-compose.yml` every time you start or build containers.
 
 Connecting your Application to the Shipyard containers, like MySQL or Redis, is done by pointing up the name of the Service. That way you don't have to wander around for the correct IP or making custom aliases for every container. For example, let's connect our Application to our MariaDB Service editing our Application `.env` file:
 
