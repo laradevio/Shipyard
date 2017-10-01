@@ -56,7 +56,7 @@ With some minimal configuration, you can easily expand Laravel Shipyard to fit y
 
 Why you should use Shipyard instead of [Laravel Homestead](https://laravel.com/docs/master/homestead) or your own system? And why you shouldn't?
 
-Long story short: If you are not comfortable with Homestead or your own system, or you want to not install anything in your system, then give Shipyard an go. It provides more flexibility and efficiency. Say goodbye to full VMs and XAMP stacks.
+Long story short: If you are not comfortable with Homestead or your own system, or you don't want to install anything in your system, then give Shipyard an go, as it provides more flexibility and efficiency. Say goodbye to big VMs and unconfigurable XAMP stacks.
 
 #### Advantages
 - Granularity: Nginx, PHP, Node.js, Redis, MySQL and all other software separated from each other, and the resources of your system.
