@@ -42,6 +42,7 @@
 - [Logs](#logs)
 - [Deployment](#deployment)
 - [Mac Performance](#mac-performance)
+- [About Preinstalled Software](https://github.com/DarkGhostHunter/shipyard/wiki/About-the-preinstalled-software)
 
 <a name="introduction"></a>
 ## Introduction
@@ -585,3 +586,5 @@ There are some workarounds, but there are one that work in most cases: adding th
 The `:delegated` directive makes the writing performed by containers **not immediately reflected** on the Host file system, thus allowing better performance on writes, like when using `composer` commands inside Warehouse.
       
 If you need realtime syncronization between the container's contents and your Host, you are free to play with another workarounds, like using [Docker Sync](http://docker-sync.io/).
+
+## [About Preinstalled Software](https://github.com/DarkGhostHunter/shipyard/wiki/About-the-preinstalled-software)
