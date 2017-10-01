@@ -1,0 +1,10 @@
+#
+#--------------------------------------------------------------------------
+# Laaravel Schedule
+#--------------------------------------------------------------------------
+#
+# Using this single line, you can use Laravel Scheduler to run scheduled
+# commands for your application. The log will go directly to Docker's
+# log system, so you don't have to pass it to /dev/null.
+
+php /path-to-your-project/artisan schedule:run >> /dev/null 2>&1

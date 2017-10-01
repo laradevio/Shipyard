@@ -1,0 +1,7 @@
+# This is useful to edit when you need to execute Commands 
+# only available inside the Warehouse Container, like
+# npm, openssl, sqlite, etc.
+#
+# 
+# * * * * * warehouse {COMMAND} >> /dev/null 2>&1
+

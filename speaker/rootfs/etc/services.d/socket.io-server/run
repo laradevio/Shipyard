@@ -1,0 +1,20 @@
+#!/usr/bin/with-contenv sh
+
+#
+# By default, we read the index.js file in your project root. If
+# it's not present, the container will read a default index.js
+#
+
+echo "Running socket.io"
+
+if [ -f /var/www/index.js ]; then
+	echo "We found 'index.js', running this file..."
+	exec /usr/bin/node /var/www/index.js >> /proc/self/fd/1 2>&1
+else
+	echo "We didn't find 'index.js'. Running a default script for example purposes."
+#	cp -rf -a -p /etc/socket.io/index.js /var/www/index.js >> /proc/self/fd/1 2>&1
+#	echo "Running it now..."
+#	node /var/www/index.js >> /proc/self/fd/1 2>&1
+	exec /usr/bin/node /etc/socket.io/index.js >> /proc/self/fd/1 2>&1
+fi
+

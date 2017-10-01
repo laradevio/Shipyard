@@ -1,0 +1,379 @@
+version: '3.3'
+
+services:
+
+  ### Warehouse Container #####################################################
+  warehouse:
+    container_name: shipyard_warehouse
+    build:
+      context: ./warehouse
+      dockerfile: "Dockerfile"
+      args:
+        - APP_TZ=${APP_TZ}
+        - PHP_SOAP=${PHP_SOAP}
+        - PHP_BCMATH=${PHP_BCMATH}
+        - PHP_REDIS=${PHP_REDIS}
+        - PHP_OPCACHE=${PHP_OPCACHE}
+    volumes:
+      - type: bind
+        source: ${APP_PATH}
+        target: /var/www${DELEGATED_MOUNT}
+      - type: bind
+        source: ./warehouse/crontab/cron.job
+        target: /etc/cron.d/cron.job
+      - type: bind
+        source: ${SECRETS_PATH}
+        target: /secrets
+    ports:
+      - "${WAREHOUSE_PORT_SSH}:22"
+      - "81:80"
+    tty: true
+    networks:
+      - frontend
+      - backend
+  
+  ### NGINX ###################################################################
+  nginx:
+    container_name: shipyard_nginx
+    image: shipyard_nginx:latest
+    build:
+      context: ./nginx
+      dockerfile: "Dockerfile"
+    volumes:
+      - type: bind
+        source: ${APP_PATH}
+        target: /var/www${DELEGATED_MOUNT}
+      - type: bind
+        source: ${SECRETS_PATH}/ssl
+        target: /etc/ssl/
+        volume:
+          read_only: true
+      - type: bind
+        source: ./nginx/nginx.conf
+        target: /etc/nginx/nginx.conf
+        volume:
+          read_only: true
+      - type: bind
+        source: ./nginx/conf.d
+        target: /etc/nginx/conf.d-unparsed
+        volume:
+          read_only: true
+      - type: bind
+        source: ./nginx/sites-available
+        target: /etc/nginx/sites-available-unparsed
+        volume:
+          read_only: true
+    ports:
+      - "${NGINX_HTTP_PORT}:80"
+      - "${NGINX_HTTPS_PORT}:443"
+      - "${NGINX_XDEBUG_HTTP_PORT}:9080"
+      - "${NGINX_XDEBUG_HTTPS_PORT}:9433"
+    environment:
+      - SERVER_NAME=${SERVER_NAME}
+      - NGINX_HTTP_PORT=${NGINX_HTTP_PORT}
+      - NGINX_HTTPS_PORT=${NGINX_HTTPS_PORT}
+      - NGINX_XDEBUG_HTTP_PORT=${NGINX_XDEBUG_HTTP_PORT}
+      - NGINX_XDEBUG_HTTPS_PORT=${NGINX_XDEBUG_HTTPS_PORT}
+    depends_on:
+      - php
+      - warehouse
+    networks:
+      # We use Aliases to locate the SERVER_NAME of our app inside the networks
+      frontend:
+        aliases:
+         - "${SERVER_NAME}"
+      backend:
+        aliases:
+         - "${SERVER_NAME}"
+      
+  #### PHP 7.1 ################################################################
+  php:
+    container_name: shipyard_php
+    image: shipyard_php:latest
+    build:
+      context: ./php
+      dockerfile: "Dockerfile"
+      args:
+        - PHP_SOAP=${PHP_SOAP}
+        - PHP_BCMATH=${PHP_BCMATH}
+        - PHP_REDIS=${PHP_REDIS}
+        - PHP_OPCACHE=${PHP_OPCACHE}
+    volumes:
+      - type: bind
+        source: ${SECRETS_PATH}
+        target: /secrets/
+        volume:
+          read_only: true
+      - type: bind
+        source: ${APP_PATH}
+        target: /var/www${DELEGATED_MOUNT}
+      - type: bind
+        source: ./php/php-fpm.conf
+        target: /etc/php7/php-fpm.conf
+#      - type: bind
+#        source: ./php/php.ini
+#        target: /usr/local/etc/php/php.ini
+    ports:
+      - "9000"
+    networks:
+      - backend
+
+  #### PHP 7.1 with XDEBUG ####################################################
+  xdebug:
+    container_name: shipyard_xdebug
+    build:
+      context: ./xdebug
+      dockerfile: "Dockerfile"
+    volumes:
+      - type: bind
+        source: ${SECRETS_PATH}
+        target: /secrets/
+        volume:
+          read_only: true
+      - type: bind
+        source: ${APP_PATH}
+        target: /var/www${DELEGATED_MOUNT}
+      - type: bind
+        source: ./xdebug/xdebug.ini
+        target: /etc/php7/conf.d/xdebug.ini
+#      - type: bind
+#        source: ./php/php.ini
+#        target: /usr/local/etc/php/php.ini
+    environment:
+      - XDEBUG_CONFIG="idekey=${XDEBUG_IDEKEY}"
+    ports:
+      - "${XDEBUG_HOST_PORT}:9000"
+    networks:
+      - backend
+
+  ### MySQL ###################################################################
+  mysql:
+    container_name: shipyard_mysql
+    build:
+      context: ./mysql
+      dockerfile: "Dockerfile"
+    volumes:
+      - type: bind
+        source: ./.data/mysql
+        target: /var/lib/mysql
+    ports:
+      - "${MYSQL_PORT}:3306"
+    networks:
+      - backend
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_ROOT_HOST=%
+  
+  #### MariaDB ################################################################
+  mariadb:
+    container_name: shipyard_mariadb
+    build:
+      context: ./mariadb
+      dockerfile: "Dockerfile"
+    volumes:
+      # Data Volume
+      - type: ${DATA_VOLUME_TYPE}
+        source: ${DATA_SOURCE_STRING}mariadb
+        target: /var/lib/mysql
+      # End Data Volume
+    ports:
+      - "${MARIADB_PORT}:3306"
+    environment:
+      - MYSQL_DATABASE=${MARIADB_DATABASE}
+      - MYSQL_USER=${MARIADB_USER}
+      - MYSQL_PASSWORD=${MARIADB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+    networks:
+      - backend
+      
+  ### PostgreSQL ##############################################################
+  postgresql:
+    container_name: shipyard_postgresql
+    build:
+      context: ./postgresql
+      dockerfile: "Dockerfile"
+    volumes:
+      # Data Volume
+      - type: ${DATA_VOLUME_TYPE}
+        source: ${DATA_SOURCE_STRING}postgresql
+        target: /var/lib/postgresql/data
+      # End Data Volume
+    ports:
+      - "${POSTGRESQL_PORT}:5432"
+    environment:
+      - POSTGRESQL_DB=${POSTGRESQL_DB}
+      - POSTGRESQL_USER=${POSTGRESQL_USER}
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+    networks:
+      - backend
+      
+  ### Redis ###################################################################
+  redis:
+    container_name: shipyard_redis
+    image: shipyard_redis:latest
+    build:
+      context: ./redis
+      dockerfile: "Dockerfile"
+    volumes:
+      - type: bind
+        source: ./.data/redis
+        target: /data
+    ports:
+      - "${REDIS_PORT}:6379"
+    networks:
+      - backend
+      
+  ### Beanstalkd ##############################################################
+  beanstalkd:
+    container_name: shipyard_beanstalkd
+    build:
+      context: ./beanstalkd
+      dockerfile: "Dockerfile"
+    volumes:
+      # Data Volume
+      - type: ${DATA_VOLUME_TYPE}
+        source: ${DATA_SOURCE_STRING}beanstalkd
+        target: /var/lib/beanstalkd/data
+      # End Data Volume
+      - type: bind
+        source: ${APP_PATH}
+        target: /var/www${DELEGATED_MOUNT}
+    ports:
+      - "${BEANSTALKD_PORT}:11300"
+    networks:
+      - backend
+     
+  ### Shipyard Steward ########################################################
+  steward:
+    container_name: shipyard_steward
+    build:
+      context: ./steward
+      dockerfile: "Dockerfile"
+    volumes:
+      - type: bind
+        source: ${SECRETS_PATH}
+        target: /secrets/
+        volume:
+          read_only: true
+      - type: bind
+        source: ${APP_PATH}
+        target: /var/www${DELEGATED_MOUNT}
+      - type: bind
+        source: ./warehouse/crontab/cron.job
+        target: /etc/cron.d/cron.job
+        volume:
+          read_only: true
+    environment:
+      - STEWARD_SCHEDULER=${STEWARD_SCHEDULER}
+      - STEWARD_QUEUE=${STEWARD_QUEUE}
+      - STEWARD_HORIZON=${STEWARD_HORIZON}
+    networks:
+      - backend
+  
+  ### Shipyard Speaker ########################################################
+  speaker:
+    container_name: shipyard_speaker
+    build:
+      context: ./speaker
+      dockerfile: "Dockerfile"
+    volumes:
+      - type: bind
+        source: ${SECRETS_PATH}
+        target: /secrets/
+        volume:
+          read_only: true
+      - type: bind
+        source: ${APP_PATH}
+        target: /var/www${DELEGATED_MOUNT}
+      - type: bind
+        source: ./speaker/index.js
+        target: /etc/socket.io/index.js
+        volume:
+          read_only: true
+    depends_on:
+      - speaker_redis
+    ports:
+      - "${SPEAKER_PORT}:6001"
+    networks:
+      - frontend
+      - backend
+      
+  ### Shipyard Speaker Redis ##################################################
+  speaker_redis:
+    container_name: shipyard_speaker_redis
+    build:
+      context: ./speaker-redis
+      dockerfile: "Dockerfile"
+    volumes:
+      - type: bind
+        source: ./.data/speaker_redis
+        target: /data
+    ports:
+      - "${SPEAKER_REDIS_PORT}:6379"
+    networks:
+      - backend
+      
+  ### Mailhog Container #######################################################
+  mailhog:
+    container_name: shipyard_mailhog
+    build:
+      context: ./mailhog
+      dockerfile: "Dockerfile"
+    ports:
+      - "${MAILHOG_STMP_PORT}:1025"
+      - "${MAILHOG_HTTP_PORT}:8025"
+    networks:
+      - frontend
+      - backend
+      
+  ### Mailhog Container #######################################################
+  portainer:
+    container_name: shipyard_portainer
+    image: portainer/portainer
+    command: ["--ssl",
+      "--sslcert",
+      "/secrets/ssl/certs/shipyard-server-cert.pem",
+      "--sslkey",
+      "/secrets/ssl/certs/shipyard-server-key.pem",
+      "-H",
+      "unix:///var/run/docker.sock"]
+    volumes:
+      - type: bind
+        source: ${SECRETS_PATH}
+        target: /secrets/
+        volume:
+          read_only: true
+      - type: bind
+        source: ./.data/portainer
+        target: /data
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+    ports:
+      - "${PORTAINER_PORT}:9000"
+    networks:
+      - frontend
+      - backend
+      
+  ### -- Backup Container for Windows goes here --
+      
+### Volumes to be shared across containers
+volumes:
+  data_mariadb:
+    driver: "local"
+  data_postgresql:
+    driver: "local"
+  data_beanstalkd:
+    driver: "local"
+  
+### Networks shares across Services and their containers
+networks:
+  ### The publicly-available containers
+  frontend:
+    driver: "bridge"
+  ### The internal containers
+  backend:
+    driver: "bridge"

@@ -1,0 +1,6 @@
+#!/usr/bin/execlineb -P
+
+with-contenv
+
+exec /usr/sbin/crond -f -c /etc/cron.d >> /proc/self/fd/1 2>&1
+

@@ -1,0 +1,3 @@
+#!/usr/bin/with-contenv sh
+
+exec -a laravel-horizon /usr/bin/php /var/www/artisan horizon >> /proc/self/fd/1 2>&1
