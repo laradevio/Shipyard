@@ -140,6 +140,8 @@ services:
 #        target: /usr/local/etc/php/php.ini
     environment:
       - XDEBUG_CONFIG="idekey=${XDEBUG_IDEKEY}"
+    depends_on:
+      - php
     ports:
       - "${XDEBUG_HOST_PORT}:9000"
     networks:
