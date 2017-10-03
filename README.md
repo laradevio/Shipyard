@@ -206,7 +206,7 @@ To run a command inside the Warehouse Container, just enter Shipyard directory a
     
     docker exec -it --user shipyard shipyard_warehouse laravel new && npm install && npm run watch
 
-These commands run conveniently at `/var/www` path. Also, the results of every of these commands will be showed on your interface, and it will allow interaction if needed.
+These commands run conveniently at `/var/www` path. Also, the results of every of these commands will be showed on your interface, and allow interaction if needed.
 
 > {tip} The commands and files affected use the `shipyard` user. If that isn't what you want, you can add the `--user root` option flag.
 
@@ -253,9 +253,9 @@ Take a look at [Modifying Shipyard](#modifiying-shipyard) for more information h
 <a name="ssh"></a>
 ### SSH
 
-While it's better to directly invoke commands from your Host using the `warehouse` shortcut, you can use this handy command that will put you under `bash` shell:
+While it's better to directly invoke commands from your Host using the `docker exec -it --user shipyard shipyard_container` shortcut, you can use this handy command that will put you under `bash` shell:
 
-    docker exec -it --user shipyard bash
+    docker exec -it --user shipyard shipyard_warehouse bash
 
 There is no need to use SSH with passwords or keys with Shipyard, but you can still use SSH for whatever reason it may be, like allowing someone of your outside network to peep and make adjustments remotely through the `:2222` port and the default `secret` password:
     
