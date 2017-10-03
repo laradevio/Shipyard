@@ -271,6 +271,8 @@ services:
       - STEWARD_SCHEDULER=${STEWARD_SCHEDULER}
       - STEWARD_QUEUE=${STEWARD_QUEUE}
       - STEWARD_HORIZON=${STEWARD_HORIZON}
+    depends_on:
+      - php
     networks:
       - backend
   
