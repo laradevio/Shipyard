@@ -26,7 +26,6 @@ services:
         target: /secrets
     ports:
       - "${WAREHOUSE_PORT_SSH}:22"
-      - "81:80"
     tty: true
     networks:
       - frontend
