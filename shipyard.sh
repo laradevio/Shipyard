@@ -210,7 +210,7 @@ if [[ -f ./.secrets/ssl/certs/shipyard-ca-cert.pem || -f ./.secrets/ssl/certs/sh
     We found some CA Certificates. Do you want to overwrite them?
 	
 	Select 'No' if you are unsure. You can use OpenSSL to check
-	them and use '.shipyard --newssl' later to replace them.
+	them and write '.commands/shipyard/newssl.sh' later to replace them.
     (( Caution! )))
     ~~~~~~~~~~~~~~~
 \n"
