@@ -135,9 +135,9 @@ services:
       - type: bind
         source: ./xdebug/xdebug.ini
         target: /etc/php7/conf.d/xdebug.ini
-#      - type: bind
-#        source: ./php/php.ini
-#        target: /usr/local/etc/php/php.ini
+      - type: bind
+        source: ./php/php-fpm.conf
+        target: /etc/php7/php-fpm.conf
     environment:
       - XDEBUG_CONFIG="idekey=${XDEBUG_IDEKEY}"
     depends_on:
