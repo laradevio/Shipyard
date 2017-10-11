@@ -137,7 +137,7 @@ Once Docker is installed and running, the next step is to download the blueprint
 
     cd ~
     
-    git clone https://github.com/darghosthunter/shipyard.git Shipyard
+    git clone git://github.com/DarkGhostHunter/Shipyard Shipyard
     
     cd Shipyard
     
