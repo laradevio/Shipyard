@@ -141,7 +141,7 @@ Once Docker is installed and running, the next step is to download the blueprint
     
     cd Shipyard
     
-You should check out a tagged version of Shipyard since the `master` branch may not always be stable. You can find the latest stable version on the [GitHub Release Page](https://github.com/laravel/shipyard/releases):
+You should check out a tagged version of Shipyard since the `master` branch may not always be stable. You can find the latest stable version on the [GitHub Release Page](https://github.com/DarkGhostHunter/Shipyard/releases):
 
     git checkout v1.0.2
 	
