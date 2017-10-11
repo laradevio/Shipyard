@@ -94,7 +94,7 @@ fi
 # OS Fixes -- MacOS
 #
 if [[ "$os" == "MacOS" ]]; then 
-	printf "Adding :delegated fix."
+	printf "\n* Adding :delegated fix.\n"
 	sed -i "s/^DELEGATED_MOUNT=.*/DELEGATED_MOUNT=:delegated/" .env
 fi
 
@@ -102,7 +102,7 @@ fi
 # OS Fixes -- Windows
 #
 if [[ "$os" == "Windows" ]]; then
-	printf "Adding volume fix for MariaDB, Beanstalkd & PostgreSQL."
+	printf "\n* Adding volume fix for MariaDB, Beanstalkd & PostgreSQL.\n"
 	sed -i "s/^DATA_VOLUME_TYPE=.*/DATA_VOLUME_TYPE=volume/" .env
 	sed -i "s/^DATA_SOURCE_STRING=.*/DATA_SOURCE_STRING=data_/" .env
 	printf "Adding 'winbackup' container"
