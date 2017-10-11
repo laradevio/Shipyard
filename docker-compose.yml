@@ -205,9 +205,9 @@ services:
     ports:
       - "${POSTGRESQL_PORT}:5432"
     environment:
-      - POSTGRESQL_DB=${POSTGRESQL_DB}
-      - POSTGRESQL_USER=${POSTGRESQL_USER}
-      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+      - POSTGRES_DB=${POSTGRESQL_DB}
+      - POSTGRES_USER=${POSTGRESQL_USER}
+      - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
     networks:
       - backend
       
