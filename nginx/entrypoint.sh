@@ -20,6 +20,10 @@ function ReplaceEnvironmentVariable() {
     grep -rl "\$ENV{\"$1\"}" $3 | xargs -r sed -i "s|\\\$ENV{\"$1\"}|$2|g"
 }
 
+# Add a resolver for xDebug block on the NGINX file
+RS=$( cat /etc/resolv.conf | grep "nameserver" | head -1 | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" )
+export RESOLVER_SERVER=$RS
+
 # Replace all variables on the copied files (not the originals)
 for _curVar in `env | awk -F = '{print $1}'`;do
     ReplaceEnvironmentVariable ${_curVar} ${!_curVar} /etc/nginx/conf.d/*
