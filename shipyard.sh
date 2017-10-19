@@ -40,13 +40,13 @@ fi
 #
 # Docker Detection
 #
-if ! env | grep -q "docker\|Docker" ; then
+if command -v docker-compose >/dev/null 2>&1 ; then
 	printf "
     (( Caution! )))
     ~~~~~~~~~~~~~~~
-    It seems that Docker is not installed in your system
-    Please install from https://www.docker.com to use
-    Laravel Shipyard after the script finishes.
+    It seems that Docker is not properly installed or present.
+    Please go to https://www.docker.com and install Docker
+    to use Laravel Shipyard after the script finishes.
     ~~~~~~~~~~~~~~~
     (( Caution! )))
 \n"
@@ -105,7 +105,7 @@ if [[ "$os" == "Windows" ]]; then
 	printf "\n* Adding volume fix for MariaDB, Beanstalkd & PostgreSQL.\n"
 	sed -i "s/^DATA_VOLUME_TYPE=.*/DATA_VOLUME_TYPE=volume/" .env
 	sed -i "s/^DATA_SOURCE_STRING=.*/DATA_SOURCE_STRING=data_/" .env
-	printf "Adding 'winbackup' container"
+	printf "\n* Adding 'winbackup' container\n"
 	bash ./.commands/shipyard/winbackup.sh
 fi
 
@@ -128,7 +128,8 @@ done
 if [[ "$project_path" == 'custom' ]]; then
 	printf "\n~~~~~~~~~\n    Enter the path of your Laravel project: \n"
 	if [[ "$os" == "Windows" ]]; then
-		printf "\n    Use '/c/Users/MyUser' under Windows to reference partitions \n"
+		printf "\n    Use '/c/Users/MyUser/Laravel' under Windows to reference partitions \n"
+		printf "\n    Use '../MyOtherLaravelApp' to reference Shipyard relative directory \n"
 	fi
 	read project_path
 fi
@@ -138,7 +139,7 @@ printf "
 "
 
 if [ ! -d project_path ]; then
-	mkdir -p project_path
+   mkdir -p project_path
 fi
 
 if [ -z "$(ls -A $project_path)" ]; then
@@ -251,7 +252,7 @@ printf "
 
 That's all folks!
 
-- Install the CA Certificate inside '.secrets/ssl'
+- Install the CA Certificate '.secrets/ssl/certs/shipyard-ca-cert.pem'
 - Develop your application under '$project_path'
 - Access with your browser at '$full_server_name'
 
