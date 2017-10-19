@@ -236,9 +236,9 @@ if [[ "$cert_create" == true ]]; then
 	fi
 	
 	if [ ! -f .secrets/ssl/dhparam.pem ]; then
-		printf "##########################################\n$(date -u)\n" &>>.secrets/ssl/newssl.log
-		openssl dhparam -dsaparam -out .secrets/ssl/dhparam.pem 2048 &>>.secrets/ssl/newssl.log
-		printf "##########################################\n\n\n" &>>.secrets/ssl/newssl.log
+		printf "##########################################\n$(date -u)\n" >> .secrets/ssl/newssl.log 2>&1
+		openssl dhparam -dsaparam -out .secrets/ssl/dhparam.pem 2048 >> .secrets/ssl/newssl.log 2>&1
+		printf "##########################################\n\n\n" >> .secrets/ssl/newssl.log 2>&1
 	fi
 	
 	bash ./.commands/shipyard/newssl.sh
