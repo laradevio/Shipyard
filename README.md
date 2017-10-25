@@ -50,18 +50,18 @@
 
 Laravel Shipyard is a modular, lightweight, and machine-agnostic PHP development environment built on top of [Docker](https://www.docker.com/). It allows software to be run in a very simple and efficient way through isolation instead of full virtual machines, and doesn't require great compiling times or big downloads.
 
-With some minimal configuration, you can easily expand Laravel Shipyard to fit your needs with new software, or share your environment to other computers. It has all the common tools and software *containerized* so its not necessary to install anything on the host system. On top of that, you can update, modify or re-create all or part of it in mere seconds. And you may want to never look back!
+With some minimal configuration, you can easily expand Laravel Shipyard to fit your needs with new software, or share your environment to other computers. It has all the common tools and software *containerized* so its not necessary to install anything on the host system, like Node.js or PHP Runtimes. On top of that, you can update, modify or re-create all or part of it in mere seconds. You may want to never look back!
 
 <a name="pros-and-cons"></a>
 ### Pros and Cons
 
 Why you should use Shipyard instead of [Laravel Homestead](https://laravel.com/docs/master/homestead) or your own system? And why you shouldn't?
 
-Long story short: If you are not comfortable with Homestead or your own system, or you don't want to install anything in your system, then give Shipyard an go, as it provides more flexibility and efficiency. Say goodbye to big VMs and unconfigurable XAMP stacks.
+Long story short: If you are not comfortable with Homestead or your own development environment, or you don't want to install anything in your system, then give Shipyard an go, as it provides more flexibility and efficiency. Say goodbye to big VMs and unconfigurable XAMP stacks.
 
 #### Advantages
 - Granularity: Nginx, PHP, Node.js, Redis, MySQL and all other software separated from each other, and the resources of your system.
-- Isolation: Software runs apart from the system and other processes, and only communicate by internal network ports or specific volumes.
+- Isolation: Software runs apart from the system and other processes, and only communicate by an internal network and specific volumes.
 - Maintenance: Service containers can be updated in just seconds, without losing their configuration.
 - Efficiency: It's not necessary to have full-fledged Virtual Machines and large images to run every software.
 - Independency: Software dependency is resolved in each Service Container, not globally.
@@ -69,7 +69,7 @@ Long story short: If you are not comfortable with Homestead or your own system, 
 - Control: Every Service can be rebuilt fresh, and modified without losing build changes.
 - Sharing: Take it to other computer with no hassle by only copying some files.
 - Modularity: You can add your own services, or spawn more containers of the same services without tampering others.
-- Recycling: Containers can be based on other containers, so it's not needed to reinvent the wheel or build everything again.
+- Recycling: Containers can be based on other containers, so it's not needed to reinvent the wheel or build everything *again and again*.
 - Forking: You can have your own modified Shipyard with its blueprints to suit your needs.
 
 #### Disadvantages
@@ -128,7 +128,7 @@ Before building Laravel Shipyard, you must first [install Docker](https://store.
 
 Docker runs natively in Linux. Meanwhile, on Windows or MacOS, it runs transparently using a modified Virtual Machine called MobyLinuxVM. After setup, be sure to share the drive or volume where your Application lies so MobyLinuxVM and the underlying containers will be able to mount the contents when requested.
 
-> {note} Windows users should be aware to allow the newer network made as "Private" instead of "Public", and allow *File Sharing* on Private Networks.
+> {note} Windows users should be aware to allow the newer network made as "Private" instead of "Public", and allow *Network Discovery* on Private Networks. If you are unsure about the security of file sharing over networks, you can mount a virtual drive and share that.
 
 <a name="downloading-the-blueprint"></a>
 ### Downloading the Blueprint
@@ -143,7 +143,7 @@ Once Docker is installed and running, the next step is to download the blueprint
     
 You should check out a tagged version of Shipyard since the `master` branch may not always be stable. You can find the latest stable version on the [GitHub Release Page](https://github.com/DarkGhostHunter/Shipyard/releases):
 
-    git checkout v1.0.2
+    git checkout v1.0.5
 	
 <a name="starting-shipyard"></a>
 ### Starting Shipyard
@@ -158,7 +158,7 @@ After you're done, it's time to start the containers. This will take some minute
 
     docker-compose up -d
 
-Alternatively, you can build *only the containers you need* by just pointing out their service names. For example, you can quickly start up PHP, Nginx and MySQL without ever downloading and building the rest of the other containers like Mailhog or Redis, which will save you time:
+Alternatively, you can build *only the containers you need* by just pointing out their service names. For example, you can quickly start up PHP, Nginx and MySQL without ever downloading and building the rest of the other containers like Mailhog or Redis, which will save you some minutes:
 
     docker-compose up -d nginx mysql
 
@@ -501,18 +501,17 @@ Whenever you are changing a service exposed port, or creating a new service, wat
 
 Exposed Port | Service | Description
 ---- | ---- | ---
-`:80`             | `nginx`            | Application HTTP Protocol
-`:433`            | `nginx`            | Application HTTPS Protocol
+`:80`, `:433`     | `nginx`            | Application HTTP & HTTPS Protocol
 `:1025`, `:8025`  | `mailhog`          | Mailhog SMTP and Management GUI
 `:2222`           | `warehouse`        | SSH
-`:3306`           | `mysql`            | MariaDB/MySQL Database connection
-`:3316`           | `mariadb`          | MariaDB/MySQL Database connection
+`:3306`           | `mysql`            | MySQL Database connection
+`:3316`           | `mariadb`          | MariaDB Database connection
 `:4444`           | `portainer`        | Portainer Web UI
 `:5432`           | `postgre`          | Postgre Database connection
 `:6001`           | `speaker`          | Shipyard Speaker Socket.io Server
 `:6002`           | `redis`            | Shipyard Speaker Redis server
 `:6379`           | `redis`            | Redis Database connection
-`:9080`, `:9433`  | `xdebug`           | xDebug Redirecirion and HTTPS Remote DBGp connection
+`:9080`, `:9433`  | `xdebug`           | xDebug Redirection and HTTPS Remote DBGp connection
 `:11300`          | `beanstalkd`       | Beanstalkd Queue Worker
 
 > {tip} While the Speaker Server port is configurable, it's recommended to use the `:6001` port because is already reserved, so you don't need to further edit your `.env` or `docker-compose.yml` files.
