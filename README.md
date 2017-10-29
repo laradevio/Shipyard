@@ -78,7 +78,7 @@ Long story short: If you are not comfortable with Homestead or your own developm
 - Virtualization: On Windows and Mac there are some *minor* caveats, the first being a tiny VM running for Docker.
 - Deployment: Lot of work that must be done to prepare Laravel Shipyard to push a button and deploy to an **unmanaged server** with security, monitoring and resilience in mind.
 
-If you feel left out, you can read [Docker Overview](https://docs.docker.com/get-started/#a-brief-explanation-of-containers) to have a glance about how Laravel Shipyard works.
+If you feel left out, you can get a grisp with [Docker Overview](https://docs.docker.com/get-started/#a-brief-explanation-of-containers) to have a glance about how Laravel Shipyard works. Alternatively, you can just read [Microsoft's brief explanation of containers](https://docs.microsoft.com/en-us/virtualization/windowscontainers/about/) for the matter, which will make you understand in no more than 5 minutes. Or the pizza is free.
 
 <a name="requirements"></a>
 ### Requirements
