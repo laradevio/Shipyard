@@ -20,7 +20,7 @@ printf "01" > .secrets/ssl/serial.txt
 
 echo 'Creating CA Certificate...'
 printf "\n" >> .secrets/ssl/newssl.log 2>&1
-openssl req -new -x509 -sha256 -newkey rsa:2048 -nodes -days 365 -extensions ca_extensions -outform PEM \
+openssl req -new -x509 -sha256 -newkey rsa:2048 -nodes -days 365 -set_serial 0xb -extensions ca_extensions -outform PEM \
 	-config .secrets/openssl-ca.conf \
 	-keyout .secrets/ssl/certs/shipyard-ca-key.pem \
 	-out .secrets/ssl/certs/shipyard-ca-cert.pem >> .secrets/ssl/newssl.log 2>&1
