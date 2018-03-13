@@ -162,7 +162,7 @@ printf "
     Do you want to access using a custom server name?
 "
 
-select nyy in "No, just use 'localhost'" "Yes, use '*.shipyard.localhost' subdomain" "Yes, use '{myservername}.localhost' domain"; do
+select nyy in "No, just use 'localhost'" "Yes, use '*.shipyard.test' subdomain" "Yes, use '{myservername}.test' domain"; do
 	case $nyy in
 		"No, just use 'localhost'" )
 			server_name='localhost'
@@ -170,20 +170,20 @@ select nyy in "No, just use 'localhost'" "Yes, use '*.shipyard.localhost' subdom
 			cert_domain=false
 			full_server_name='https://localhost'
 		break;;
-		"Yes, use '*.shipyard.localhost' subdomain" ) 
-			read -p "Enter your subdomain name (.shipyard.localhost): " server_name
-			sed -i "s/^SERVER_NAME=.*/SERVER_NAME=$server_name\.shipyard\.localhost/" .env
-			full_server_name="https://$server_name.shipyard.localhost"
+		"Yes, use '*.shipyard.test' subdomain" ) 
+			read -p "Enter your subdomain name (.shipyard.test): " server_name
+			sed -i "s/^SERVER_NAME=.*/SERVER_NAME=$server_name\.shipyard\.test/" .env
+			full_server_name="https://$server_name.shipyard.test"
 		break;; 
-		"Yes, use '{myservername}.localhost' domain" )
-			read -p "Enter your 'domain name' (.localhost): " server_name
-			sed -i "s/^SERVER_NAME=.*/SERVER_NAME=$server_name\.localhost/" .env
+		"Yes, use '{myservername}.test' domain" )
+			read -p "Enter your 'domain name' (.test): " server_name
+			sed -i "s/^SERVER_NAME=.*/SERVER_NAME=$server_name\.test/" .env
 			sed -i "/^DNS\.6.*/,/^/d" ./.secrets/openssl-server.conf
 			sed -i "/^DNS\.7.*/,/^/d" ./.secrets/openssl-server.conf
-			printf "\nDNS.6 = $server_name.localhost" >> .secrets/openssl-server.conf
-			printf "\nDNS.7 = *.$server_name.localhost" >> .secrets/openssl-server.conf
-			printf "\nAdded '$server_name.localhost' to your OpenSSL Certificate config file \n"
-			full_server_name="https://$server_name.localhost"
+			printf "\nDNS.6 = $server_name.test" >> .secrets/openssl-server.conf
+			printf "\nDNS.7 = *.$server_name.test" >> .secrets/openssl-server.conf
+			printf "\nAdded '$server_name.test' to your OpenSSL Certificate config file \n"
+			full_server_name="https://$server_name.test"
 		break;;
 	esac
 done
