@@ -14,13 +14,9 @@ rm -f .secrets/ssl/*index* >> .secrets/ssl/newssl.log 2>&1 && \
 rm -f .secrets/ssl/*serial* >> .secrets/ssl/newssl.log 2>&1 && \
 rm -f .secrets/ssl/certs/* >> .secrets/ssl/newssl.log 2>&1
 
-echo 'Regenerating Index and Serial...'
-touch .secrets/ssl/index.txt >> .secrets/ssl/newssl.log 2>&1 && \
-printf "01" > .secrets/ssl/serial.txt
-
 echo 'Creating CA Certificate...'
 printf "\n" >> .secrets/ssl/newssl.log 2>&1
-openssl req -new -x509 -sha256 -newkey rsa:2048 -nodes -days 365 -set_serial 0xb -extensions ca_extensions -outform PEM \
+openssl req -new -x509 -sha256 -newkey rsa:2048 -nodes -days 365 -extensions ca_extensions -outform PEM \
 	-config .secrets/openssl-ca.conf \
 	-keyout .secrets/ssl/certs/shipyard-ca-key.pem \
 	-out .secrets/ssl/certs/shipyard-ca-cert.pem >> .secrets/ssl/newssl.log 2>&1
@@ -36,7 +32,11 @@ openssl req -new -sha256 -newkey rsa:2048 -nodes -days 365 -extensions server_re
 	-out .secrets/ssl/certs/shipyard-server-cert.csr >> .secrets/ssl/newssl.log 2>&1
 	
 # openssl req -text -noout -verify -in .secrets/ssl/certs/shipyard.server.req.pem
-	
+
+echo 'Generating Index and Serial...'
+touch .secrets/ssl/index.txt >> .secrets/ssl/newssl.log 2>&1 && \
+printf "01" > .secrets/ssl/serial.txt
+
 echo 'Signing Final Certificate...'
 printf "\n" >> .secrets/ssl/newssl.log 2>&1
 openssl ca -policy signing_policy -extensions signing_req -crlexts crl_ext -batch \
