@@ -58,7 +58,7 @@ RUN printf '@edge_community http://dl-cdn.alpinelinux.org/alpine/edge/community\
 
 RUN apk add \
 	php7 \
-    php7-fpm \
+        php7-fpm \
 	php7-amqp \
 	php7-bz2 \
 	php7-curl \
@@ -90,7 +90,7 @@ RUN apk add \
 	php7-zlib \
 	php7-xdebug
 	
-# Once PHP 7.1.9 lands on Alpine stable , we will be able to install
+# Once PHP 7.2 lands on Alpine stable , we will be able to install
 # these new packages which includes better support for crpyot,
 # uuid and images. Meanwhile, will leave it here.
 # 
