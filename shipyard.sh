@@ -42,13 +42,13 @@ fi
 #
 if ! command -v docker-compose >/dev/null 2>&1 ; then
 	printf "
-    (( Caution! )))
+    ((( Caution! )))
     ~~~~~~~~~~~~~~~
     It seems that Docker is not properly installed or present.
     Please go to https://www.docker.com and install Docker
     to use Laravel Shipyard after the script finishes.
     ~~~~~~~~~~~~~~~
-    (( Caution! )))
+    ((( Caution! )))
 \n"
 	read -rsp $'Press any key to continue...\n' -n1 key
 fi
@@ -115,7 +115,7 @@ fi
 project_path=false
 printf "
 ~~~~~~~~~
-    What is your Laravel project path? (relative to Shipyard or absolute)
+    What is your Laravel project path? (relative to Shipyard, or absolute)
     If the directory doesn't exist, we will create it for you.
 "
 select lp in "Next To Shipyard (../laravel)" "Other"; do
@@ -197,9 +197,9 @@ printf "
 #
 printf "
 ~~~~~~~~~
-    We are gonna create random 2048-bit OpenSSL certificates for
-    development under HTTPS without hindering performance.
-    Use them only for development, as they are insecure!
+    We are gonna create random and performance-lean 2048-bit
+    OpenSSL certificates for development under HTTPS. Use
+    them only for development, as they are insecure!
 \n"
 
 read -rsp $'\nPress any key to continue...\n\n' -n1 key
@@ -211,7 +211,9 @@ if [[ -f ./.secrets/ssl/certs/shipyard-ca-cert.pem || -f ./.secrets/ssl/certs/sh
     We found some CA Certificates. Do you want to overwrite them?
 	
 	Select 'No' if you are unsure. You can use OpenSSL to check
-	them and write '.commands/shipyard/newssl.sh' later to replace them.
+	them and execute '.commands/shipyard/newssl.sh' later to
+	replace them.
+	
     (( Caution! )))
     ~~~~~~~~~~~~~~~
 \n"
@@ -262,13 +264,3 @@ Go and have some fun ;)
 "
 
 exit
-
-
-
-
-
-
-
-
-
-
