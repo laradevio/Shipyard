@@ -246,6 +246,21 @@ if [[ "$cert_create" == true ]]; then
 	bash ./.commands/shipyard/newssl.sh
 fi
 
+
+#
+# S6
+#
+printf "
+~~~~~~~~~
+    Finally, we are going to download from Github the latest
+    s6 overlay so all of our docker images can play nicely
+    with services. This step should not take too long.
+\n"
+
+read -rsp $'\nPress any key to continue...\n\n' -n1 key
+
+wget -P -N /.tools/s6 https://github.com/just-containers/s6-overlay/releases/download/v1.21.4.0/s6-overlay-amd64.tar.gz
+
 #
 # End
 #
