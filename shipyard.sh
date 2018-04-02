@@ -40,15 +40,15 @@ fi
 #
 # Docker Detection
 #
-if ! env | grep -q "docker\|Docker" ; then
+if ! command -v docker-compose >/dev/null 2>&1 ; then
 	printf "
-    (( Caution! )))
+    ((( Caution! )))
     ~~~~~~~~~~~~~~~
-    It seems that Docker is not installed in your system
-    Please install from https://www.docker.com to use
-    Laravel Shipyard after the script finishes.
+    It seems that Docker is not properly installed or present.
+    Please go to https://www.docker.com and install Docker
+    to use Laravel Shipyard after the script finishes.
     ~~~~~~~~~~~~~~~
-    (( Caution! )))
+    ((( Caution! )))
 \n"
 	read -rsp $'Press any key to continue...\n' -n1 key
 fi
@@ -94,7 +94,7 @@ fi
 # OS Fixes -- MacOS
 #
 if [[ "$os" == "MacOS" ]]; then 
-	printf "Adding :delegated fix."
+	printf "\n* Adding :delegated fix.\n"
 	sed -i "s/^DELEGATED_MOUNT=.*/DELEGATED_MOUNT=:delegated/" .env
 fi
 
@@ -102,10 +102,10 @@ fi
 # OS Fixes -- Windows
 #
 if [[ "$os" == "Windows" ]]; then
-	printf "Adding volume fix for MariaDB, Beanstalkd & PostgreSQL."
+	printf "\n* Adding volume fix for MariaDB, Beanstalkd & PostgreSQL.\n"
 	sed -i "s/^DATA_VOLUME_TYPE=.*/DATA_VOLUME_TYPE=volume/" .env
 	sed -i "s/^DATA_SOURCE_STRING=.*/DATA_SOURCE_STRING=data_/" .env
-	printf "Adding 'winbackup' container"
+	printf "\n* Adding 'winbackup' container\n"
 	bash ./.commands/shipyard/winbackup.sh
 fi
 
@@ -115,7 +115,7 @@ fi
 project_path=false
 printf "
 ~~~~~~~~~
-    What is your Laravel project path? (relative to Shipyard or absolute)
+    What is your Laravel project path? (relative to Shipyard, or absolute)
     If the directory doesn't exist, we will create it for you.
 "
 select lp in "Next To Shipyard (../laravel)" "Other"; do
@@ -128,7 +128,8 @@ done
 if [[ "$project_path" == 'custom' ]]; then
 	printf "\n~~~~~~~~~\n    Enter the path of your Laravel project: \n"
 	if [[ "$os" == "Windows" ]]; then
-		printf "\n    Use '/c/Users/MyUser' under Windows to reference partitions \n"
+		printf "\n    Use '/c/Users/MyUser/Laravel' under Windows to reference partitions \n"
+		printf "\n    Use '../MyOtherLaravelApp' to reference Shipyard relative directory \n"
 	fi
 	read project_path
 fi
@@ -138,7 +139,7 @@ printf "
 "
 
 if [ ! -d project_path ]; then
-	mkdir -p project_path
+   mkdir -p project_path
 fi
 
 if [ -z "$(ls -A $project_path)" ]; then
@@ -161,7 +162,7 @@ printf "
     Do you want to access using a custom server name?
 "
 
-select nyy in "No, just use 'localhost'" "Yes, use '*.shipyard.localhost' subdomain" "Yes, use '{myservername}.localhost' domain"; do
+select nyy in "No, just use 'localhost'" "Yes, use '*.shipyard.test' subdomain" "Yes, use '{myservername}.test' domain"; do
 	case $nyy in
 		"No, just use 'localhost'" )
 			server_name='localhost'
@@ -169,20 +170,20 @@ select nyy in "No, just use 'localhost'" "Yes, use '*.shipyard.localhost' subdom
 			cert_domain=false
 			full_server_name='https://localhost'
 		break;;
-		"Yes, use '*.shipyard.localhost' subdomain" ) 
-			read -p "Enter your subdomain name (.shipyard.localhost): " server_name
-			sed -i "s/^SERVER_NAME=.*/SERVER_NAME=$server_name\.shipyard\.localhost/" .env
-			full_server_name="https://$server_name.shipyard.localhost"
+		"Yes, use '*.shipyard.test' subdomain" ) 
+			read -p "Enter your subdomain name (.shipyard.test): " server_name
+			sed -i "s/^SERVER_NAME=.*/SERVER_NAME=$server_name\.shipyard\.test/" .env
+			full_server_name="https://$server_name.shipyard.test"
 		break;; 
-		"Yes, use '{myservername}.localhost' domain" )
-			read -p "Enter your 'domain name' (.localhost): " server_name
-			sed -i "s/^SERVER_NAME=.*/SERVER_NAME=$server_name\.localhost/" .env
+		"Yes, use '{myservername}.test' domain" )
+			read -p "Enter your 'domain name' (.test): " server_name
+			sed -i "s/^SERVER_NAME=.*/SERVER_NAME=$server_name\.test/" .env
 			sed -i "/^DNS\.6.*/,/^/d" ./.secrets/openssl-server.conf
 			sed -i "/^DNS\.7.*/,/^/d" ./.secrets/openssl-server.conf
-			printf "\nDNS.6 = $server_name.localhost" >> .secrets/openssl-server.conf
-			printf "\nDNS.7 = *.$server_name.localhost" >> .secrets/openssl-server.conf
-			printf "\nAdded '$server_name.localhost' to your OpenSSL Certificate config file \n"
-			full_server_name="https://$server_name.localhost"
+			printf "\nDNS.6 = $server_name.test" >> .secrets/openssl-server.conf
+			printf "\nDNS.7 = *.$server_name.test" >> .secrets/openssl-server.conf
+			printf "\nAdded '$server_name.test' to your OpenSSL Certificate config file \n"
+			full_server_name="https://$server_name.test"
 		break;;
 	esac
 done
@@ -196,9 +197,9 @@ printf "
 #
 printf "
 ~~~~~~~~~
-    We are gonna create random 2048-bit OpenSSL certificates for
-    development under HTTPS without hindering performance.
-    Use them only for development, as they are insecure!
+    We are gonna create random and performance-lean 2048-bit
+    OpenSSL certificates for development under HTTPS. Use
+    them only for development, as they are insecure!
 \n"
 
 read -rsp $'\nPress any key to continue...\n\n' -n1 key
@@ -210,7 +211,9 @@ if [[ -f ./.secrets/ssl/certs/shipyard-ca-cert.pem || -f ./.secrets/ssl/certs/sh
     We found some CA Certificates. Do you want to overwrite them?
 	
 	Select 'No' if you are unsure. You can use OpenSSL to check
-	them and use '.shipyard --newssl' later to replace them.
+	them and execute '.commands/shipyard/newssl.sh' later to
+	replace them.
+	
     (( Caution! )))
     ~~~~~~~~~~~~~~~
 \n"
@@ -235,9 +238,9 @@ if [[ "$cert_create" == true ]]; then
 	fi
 	
 	if [ ! -f .secrets/ssl/dhparam.pem ]; then
-		printf "##########################################\n$(date -u)\n" &>>.secrets/ssl/newssl.log
-		openssl dhparam -dsaparam -out .secrets/ssl/dhparam.pem 2048 &>>.secrets/ssl/newssl.log
-		printf "##########################################\n\n\n" &>>.secrets/ssl/newssl.log
+		printf "##########################################\n$(date -u)\n" >> .secrets/ssl/newssl.log 2>&1
+		openssl dhparam -dsaparam -out .secrets/ssl/dhparam.pem 2048 >> .secrets/ssl/newssl.log 2>&1
+		printf "##########################################\n\n\n" >> .secrets/ssl/newssl.log 2>&1
 	fi
 	
 	bash ./.commands/shipyard/newssl.sh
@@ -251,7 +254,7 @@ printf "
 
 That's all folks!
 
-- Install the CA Certificate inside '.secrets/ssl'
+- Install the CA Certificate '.secrets/ssl/certs/shipyard-ca-cert.pem'
 - Develop your application under '$project_path'
 - Access with your browser at '$full_server_name'
 
@@ -261,13 +264,3 @@ Go and have some fun ;)
 "
 
 exit
-
-
-
-
-
-
-
-
-
-

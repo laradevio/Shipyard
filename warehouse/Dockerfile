@@ -154,7 +154,6 @@ VOLUME /secrets
 RUN apk add \
 	nodejs-current \
 	nodejs-current-npm \
-
 	yarn && \
 	echo '' && \
 	echo '    ################ DONT PANIC! ################' && \

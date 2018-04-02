@@ -39,7 +39,8 @@
     - [Volumes](#volumes)
     - [Multiple Containers of one Service](#multiple-containers-of-one-service)
     - [Adding Warehouse Tools](#adding-warehouse-tools)
-- [Logs](#logs)
+- [Shipyard Status](#shipyard-status)
+    - [Logs](#logs)
 - [Deployment](#deployment)
 - [Mac Performance](#mac-performance)
 - [About Preinstalled Software](https://github.com/DarkGhostHunter/shipyard/wiki/About-the-preinstalled-software)
@@ -49,18 +50,18 @@
 
 Laravel Shipyard is a modular, lightweight, and machine-agnostic PHP development environment built on top of [Docker](https://www.docker.com/). It allows software to be run in a very simple and efficient way through isolation instead of full virtual machines, and doesn't require great compiling times or big downloads.
 
-With some minimal configuration, you can easily expand Laravel Shipyard to fit your needs with new software, or share your environment to other computers. It has all the common tools and software *containerized* so its not necessary to install anything on the host system. On top of that, you can update, modify or re-create all or part of it in mere seconds. And you may want to never look back!
+With some minimal configuration, you can easily expand Laravel Shipyard to fit your needs with new software, or share your environment to other computers. It has all the common tools and software *containerized* so its not necessary to install anything on the host system, like Node.js or PHP Runtimes. On top of that, you can update, modify or re-create all or part of it in mere seconds. You may want to never look back!
 
 <a name="pros-and-cons"></a>
 ### Pros and Cons
 
 Why you should use Shipyard instead of [Laravel Homestead](https://laravel.com/docs/master/homestead) or your own system? And why you shouldn't?
 
-Long story short: If you are not comfortable with Homestead or your own system, or you don't want to install anything in your system, then give Shipyard an go, as it provides more flexibility and efficiency. Say goodbye to big VMs and unconfigurable XAMP stacks.
+Long story short: If you are not comfortable with Homestead or your own development environment, or you don't want to install anything in your system, then give Shipyard an go, as it provides more flexibility and efficiency. Say goodbye to big VMs and unconfigurable XAMP stacks.
 
 #### Advantages
 - Granularity: Nginx, PHP, Node.js, Redis, MySQL and all other software separated from each other, and the resources of your system.
-- Isolation: Software runs apart from the system and other processes, and only communicate by internal network ports or specific volumes.
+- Isolation: Software runs apart from the system and other processes, and only communicate by an internal network and specific volumes.
 - Maintenance: Service containers can be updated in just seconds, without losing their configuration.
 - Efficiency: It's not necessary to have full-fledged Virtual Machines and large images to run every software.
 - Independency: Software dependency is resolved in each Service Container, not globally.
@@ -68,7 +69,7 @@ Long story short: If you are not comfortable with Homestead or your own system, 
 - Control: Every Service can be rebuilt fresh, and modified without losing build changes.
 - Sharing: Take it to other computer with no hassle by only copying some files.
 - Modularity: You can add your own services, or spawn more containers of the same services without tampering others.
-- Recycling: Containers can be based on other containers, so it's not needed to reinvent the wheel or build everything again.
+- Recycling: Containers can be based on other containers, so it's not needed to reinvent the wheel or build everything *again and again*.
 - Forking: You can have your own modified Shipyard with its blueprints to suit your needs.
 
 #### Disadvantages
@@ -77,7 +78,7 @@ Long story short: If you are not comfortable with Homestead or your own system, 
 - Virtualization: On Windows and Mac there are some *minor* caveats, the first being a tiny VM running for Docker.
 - Deployment: Lot of work that must be done to prepare Laravel Shipyard to push a button and deploy to an **unmanaged server** with security, monitoring and resilience in mind.
 
-If you feel left out, you can read [Docker Overview](https://docs.docker.com/get-started/#a-brief-explanation-of-containers) to have a glance about how Laravel Shipyard works.
+If you feel left out, you can get a grisp with [Docker Overview](https://docs.docker.com/get-started/#a-brief-explanation-of-containers) to have a glance about how Laravel Shipyard works. Alternatively, you can just read [Microsoft's brief explanation of containers](https://docs.microsoft.com/en-us/virtualization/windowscontainers/about/) for the matter, which will make you understand in no more than 5 minutes. Or the pizza is free.
 
 <a name="requirements"></a>
 ### Requirements
@@ -127,7 +128,7 @@ Before building Laravel Shipyard, you must first [install Docker](https://store.
 
 Docker runs natively in Linux. Meanwhile, on Windows or MacOS, it runs transparently using a modified Virtual Machine called MobyLinuxVM. After setup, be sure to share the drive or volume where your Application lies so MobyLinuxVM and the underlying containers will be able to mount the contents when requested.
 
-> {note} Windows users should be aware to allow the newer network made as "Private" instead of "Public", and allow *File Sharing* on Private Networks.
+> {note} Windows users should be aware to allow the newer network made as "Private" instead of "Public", and allow *Network Discovery* on Private Networks. If you are unsure about the security of file sharing over networks, you can mount a virtual drive and share that.
 
 <a name="downloading-the-blueprint"></a>
 ### Downloading the Blueprint
@@ -136,13 +137,13 @@ Once Docker is installed and running, the next step is to download the blueprint
 
     cd ~
     
-    git clone https://github.com/darghosthunter/shipyard.git Shipyard
+    git clone git://github.com/DarkGhostHunter/Shipyard Shipyard
     
     cd Shipyard
     
-You should check out a tagged version of Shipyard since the `master` branch may not always be stable. You can find the latest stable version on the [GitHub Release Page](https://github.com/laravel/shipyard/releases):
+You should check out a tagged version of Shipyard since the `master` branch may not always be stable. You can find the latest stable version on the [GitHub Release Page](https://github.com/DarkGhostHunter/Shipyard/releases):
 
-    git checkout v0.9
+    git checkout v1.0.5
 	
 <a name="starting-shipyard"></a>
 ### Starting Shipyard
@@ -157,7 +158,7 @@ After you're done, it's time to start the containers. This will take some minute
 
     docker-compose up -d
 
-Alternatively, you can build *only the containers you need* by just pointing out their service names. For example, you can quickly start up PHP, Nginx and MySQL without ever downloading and building the rest of the other containers like Mailhog or Redis, which will save you time:
+Alternatively, you can build *only the containers you need* by just pointing out their service names. For example, you can quickly start up PHP, Nginx and MySQL without ever downloading and building the rest of the other containers like Mailhog or Redis, which will save you some minutes:
 
     docker-compose up -d nginx mysql
 
@@ -205,7 +206,7 @@ To run a command inside the Warehouse Container, just enter Shipyard directory a
     
     docker exec -it --user shipyard shipyard_warehouse laravel new && npm install && npm run watch
 
-These commands run conveniently at `/var/www` path. Also, the results of every of these commands will be showed on your interface, and it will allow interaction if needed.
+These commands run conveniently at `/var/www` path. Also, the results of every of these commands will be showed on your interface, and allow interaction if needed.
 
 > {tip} The commands and files affected use the `shipyard` user. If that isn't what you want, you can add the `--user root` option flag.
 
@@ -252,9 +253,9 @@ Take a look at [Modifying Shipyard](#modifiying-shipyard) for more information h
 <a name="ssh"></a>
 ### SSH
 
-While it's better to directly invoke commands from your Host using the `warehouse` shortcut, you can use this handy command that will put you under `bash` shell:
+While it's better to directly invoke commands from your Host using the `docker exec -it --user shipyard shipyard_container` shortcut, you can use this handy command that will put you under `bash` shell:
 
-    docker exec -it --user shipyard bash
+    docker exec -it --user shipyard shipyard_warehouse bash
 
 There is no need to use SSH with passwords or keys with Shipyard, but you can still use SSH for whatever reason it may be, like allowing someone of your outside network to peep and make adjustments remotely through the `:2222` port and the default `secret` password:
     
@@ -500,18 +501,17 @@ Whenever you are changing a service exposed port, or creating a new service, wat
 
 Exposed Port | Service | Description
 ---- | ---- | ---
-`:80`             | `nginx`            | Application HTTP Protocol
-`:433`            | `nginx`            | Application HTTPS Protocol
+`:80`, `:433`     | `nginx`            | Application HTTP & HTTPS Protocol
 `:1025`, `:8025`  | `mailhog`          | Mailhog SMTP and Management GUI
 `:2222`           | `warehouse`        | SSH
-`:3306`           | `mysql`            | MariaDB/MySQL Database connection
-`:3316`           | `mariadb`          | MariaDB/MySQL Database connection
+`:3306`           | `mysql`            | MySQL Database connection
+`:3316`           | `mariadb`          | MariaDB Database connection
 `:4444`           | `portainer`        | Portainer Web UI
 `:5432`           | `postgre`          | Postgre Database connection
 `:6001`           | `speaker`          | Shipyard Speaker Socket.io Server
 `:6002`           | `redis`            | Shipyard Speaker Redis server
 `:6379`           | `redis`            | Redis Database connection
-`:9080`, `:9433`  | `xdebug`           | xDebug Redirecirion and HTTPS Remote DBGp connection
+`:9080`, `:9433`  | `xdebug`           | xDebug Redirection and HTTPS Remote DBGp connection
 `:11300`          | `beanstalkd`       | Beanstalkd Queue Worker
 
 > {tip} While the Speaker Server port is configurable, it's recommended to use the `:6001` port because is already reserved, so you don't need to further edit your `.env` or `docker-compose.yml` files.
@@ -537,14 +537,23 @@ Warehouse can be expanded with more CLI tools (or even shrank to the bare minimu
 
 You will need some Linux and Docker knowledge to add new CLI tools to the Container, but the `Dockerfile` file is a good start to see how the container integrates these at build time, and the `./warehouse/rootfs/` to see how the SSH and Cron Services are set up using S6 Overlay.
 
-<a name="logs"></a>
-## Logs
+<a name="shipyard-status"></a>
+## Shipyard Status
 
-By default, all the Logs generated by the containers can be easily seen using Kitematic. You can also use [`docker logs`](https://docs.docker.com/compose/reference/logs/) command to get the live logs of a particular container in the command line:
+By default, all the Logs generated by the containers can be easily seen using Portainer, accesible at `https://localhost:4444`. Here you can see all inner workings of Docker, like images, container, volumes, resources assigned to the containers (like CPU% and RAM) and logs.
+
+    docker-compose up -d portainer
+
+If you are not confortable using the command line to run, stop or destroy containers, you can check Portainer and to *almost* anything within your browser. Portainer is a great aid, but it's recommended to use the command line for everthing.
+
+<a name="logs"></a>
+### Logs
+
+You can use Portainer or even Kitematic for this, but the quick way is using [`docker logs`](https://docs.docker.com/compose/reference/logs/) command to get the logs of a particular container in the command line:
 
     docker logs shipyard_nginx
 
-If you need a more convenient logging mechanism, you can edit `docker-compose.yml` and `Dockerfile` file of the container to save the logs in your Host using `bind-mount`, or to the `DATA_PATH` of your `.env`, like so:
+If you need a more convenient logging mechanism, like saving to a file, you can edit `docker-compose.yml` and `Dockerfile` file of the container to save the logs in your Host using `bind-mount`, or to the `DATA_PATH` of your `.env`, like so:
 
     nginx:
       ...

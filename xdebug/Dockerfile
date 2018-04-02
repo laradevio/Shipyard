@@ -8,6 +8,7 @@
 
 FROM shipyard_php:latest
 
-# ENTRYPOINT [ "/init" ]
-
-# WORKDIR /var/www
+#
+# This allows to some IDEs to pickup the Dockerfile image and locate xDebug
+#
+COPY xdebug.ini /etc/php7/conf.d/xdebug.ini

@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.6'
 
 services:
 
@@ -26,7 +26,6 @@ services:
         target: /secrets
     ports:
       - "${WAREHOUSE_PORT_SSH}:22"
-      - "81:80"
     tty: true
     networks:
       - frontend
@@ -136,11 +135,13 @@ services:
       - type: bind
         source: ./xdebug/xdebug.ini
         target: /etc/php7/conf.d/xdebug.ini
-#      - type: bind
-#        source: ./php/php.ini
-#        target: /usr/local/etc/php/php.ini
+      - type: bind
+        source: ./php/php-fpm.conf
+        target: /etc/php7/php-fpm.conf
     environment:
       - XDEBUG_CONFIG="idekey=${XDEBUG_IDEKEY}"
+    depends_on:
+      - php
     ports:
       - "${XDEBUG_HOST_PORT}:9000"
     networks:
@@ -204,9 +205,9 @@ services:
     ports:
       - "${POSTGRESQL_PORT}:5432"
     environment:
-      - POSTGRESQL_DB=${POSTGRESQL_DB}
-      - POSTGRESQL_USER=${POSTGRESQL_USER}
-      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+      - POSTGRES_DB=${POSTGRESQL_DB}
+      - POSTGRES_USER=${POSTGRESQL_USER}
+      - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
     networks:
       - backend
       
@@ -270,6 +271,8 @@ services:
       - STEWARD_SCHEDULER=${STEWARD_SCHEDULER}
       - STEWARD_QUEUE=${STEWARD_QUEUE}
       - STEWARD_HORIZON=${STEWARD_HORIZON}
+    depends_on:
+      - php
     networks:
       - backend
   
