@@ -91,7 +91,7 @@ Laravel Shipyard runs natively on Linux. On other OS it will require proper virt
 
 Apart from that, OpenSSL and Git commands available for first-time initialization. Windows users can download [Git for Windows](https://git-scm.com/download/win) and permanently use Git Bash shell for simplicity, as they may have a hard time using Powershell.
 
-> {tip} Older Mac and Windows users can still install Laravel Shipyard using [Docker Toolbox](https://www.docker.com/products/docker-toolbox) which includes VirtualBox, but is considered legacy and some things are not guaranteed to work completely.
+> {tip} Older Mac and Windows users can still install Laravel Shipyard using [Docker Toolbox](https://docs.docker.com/toolbox/toolbox_install_windows/) which includes VirtualBox, but is considered legacy and some things are not guaranteed to work completely. Update your system, please.
 
 <a name="included-software"></a>
 ### Included Software
@@ -128,7 +128,7 @@ Before building Laravel Shipyard, you must first [install Docker](https://store.
 
 Docker runs natively in Linux. Meanwhile, on Windows or MacOS, it runs transparently using a modified Virtual Machine called MobyLinuxVM. After setup, be sure to share the drive or volume where your Application lies so MobyLinuxVM and the underlying containers will be able to mount the contents when requested.
 
-> {note} Windows users should be aware to allow the newer network made as "Private" instead of "Public", and allow *Network Discovery* on Private Networks. If you are unsure about the security of file sharing over networks, you can mount a virtual drive and share that.
+> {note} Windows users should be aware to allow the newer network made as "Private" instead of "Public", and allow *Network Discovery* on Private Networks. If you are unsure about the security of file sharing over networks, you can [mount a virtual drive](https://www.tenforums.com/tutorials/61391-mount-unmount-vhd-vhdx-file-windows-10-a.html) and share that.
 
 <a name="downloading-the-blueprint"></a>
 ### Downloading the Blueprint
