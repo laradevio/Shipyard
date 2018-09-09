@@ -179,6 +179,7 @@ RUN apk add \
 	php7 \
 	php7-amqp \
 	php7-bz2 \
+	php7-bcmath \
 	php7-curl \
 	php7-ctype \
 	php7-dom \
@@ -245,6 +246,13 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin -
 USER shipyard
 RUN composer global require laravel/envoy laravel/installer
 
+# Install Spark Installer and initialize it
+
+USER shipyard
+RUN git clone https://github.com/laravel/spark-installer.git ~/spark-installer && \
+	PATH=$PATH:~/spark-installer && \
+	composer install --working-dir=/root/spark-installer
+
 # Add composer binaries to PATH so we can execute them from everywhere
 # using the `shipyard` user, or the `root` user.
 
@@ -266,7 +274,6 @@ ENV PATH="/home/shipyard/.composer/vendor/bin:${PATH}"
 
 ARG PHP_XDEBUG=false
 ARG PHP_SOAP=false
-ARG PHP_BCMATH=false
 ARG PHP_REDIS=false
 ARG PHP_OPCACHE=false
 
@@ -275,9 +282,6 @@ RUN if [ ${PHP_XDEBUG} = true ]; then \
 	;fi && \
 	if [ ${PHP_SOAP} = true ]; then \
 		apk add php7-soap \
-	;fi && \
-	if [ ${PHP_BCMATH} = true ]; then \
-		apk add php7-bcmath \
 	;fi && \
 	if [ ${PHP_REDIS} = true ]; then \
 		apk add php7-redis \
