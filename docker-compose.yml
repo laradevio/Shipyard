@@ -11,7 +11,6 @@ services:
       args:
         - APP_TZ=${APP_TZ}
         - PHP_SOAP=${PHP_SOAP}
-        - PHP_BCMATH=${PHP_BCMATH}
         - PHP_REDIS=${PHP_REDIS}
         - PHP_OPCACHE=${PHP_OPCACHE}
     volumes:
@@ -94,7 +93,6 @@ services:
       dockerfile: "Dockerfile"
       args:
         - PHP_SOAP=${PHP_SOAP}
-        - PHP_BCMATH=${PHP_BCMATH}
         - PHP_REDIS=${PHP_REDIS}
         - PHP_OPCACHE=${PHP_OPCACHE}
     volumes:
